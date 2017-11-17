@@ -1,0 +1,48 @@
+{% set version = "0.1.0" %}
+
+package:
+  name: gaia
+  version: {{ version }}
+
+source:
+  url: https://github.com/OpenDataAnalytics/gaia/archive/master.zip
+  sha256: 53a37843a9f8c7903a45daa6f3a6931d8b3b5e2baaaaaf5cf821bc6dede28f0b
+
+build:
+  number: 0
+  script: python setup.py install
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - numpy
+    - six
+    - requests
+    - argparse
+    - shapely
+    - geopandas
+    - pillow
+    - gdal
+    - celery
+    - psycopg2
+    - geoalchemy2
+
+test:
+  imports:
+    - gaia
+  files:
+    - test_data/test.cpg
+    - test_data/test.dbf
+    - test_data/test.shp
+    - test_data/test.shx
+
+about:
+  home: https://github.com/OpenDataAnalytics/gaia
+  license: BSD 3-clause
+  summary: 'Geospatial analytics library.'
+
+extra:
+  recipe-maintainers:
+    - Aashish Chaudhary

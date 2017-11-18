@@ -11,16 +11,17 @@ source:
 build:
   number: 0
   script: python setup.py install
+  noarch: python
 
 requirements:
   build:
     - python
     - setuptools
   run:
+    - python
     - numpy
     - six
     - requests
-    - argparse
     - shapely
     - geopandas
     - pillow

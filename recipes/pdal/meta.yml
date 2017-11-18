@@ -1,0 +1,80 @@
+{% set version = "1.6" %}
+
+package:
+  name: pdal
+  version: {{ version }}
+
+source:
+  url: https://github.com/PDAL/PDAL/archive/{{ version }}.tar.gz
+  sha256: 66baf8510225b34ee24021731758251cd70657dd578c210ae86c78d158f283eb
+  # patches:
+  #   - clang.patch  # [osx]
+  #   - prepend-dll.patch  # [win]
+  #   - install_scripts.patch
+
+build:
+  number: 0
+  features:
+    - vc9  # [win and py27]
+    - vc14  # [win and (py35 and py36)]
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - cmake  # [win]
+    - numpy 1.8.*  # [not (win and (py35 or py36))]
+    - numpy 1.9.*  # [win and py35]
+    - numpy 1.11.*  # [win and py36]
+    - libpdal {{ version }}
+    - vc 9  # [win and py27]
+    - vc 14  # [win and (py35 and py36)]
+  run:
+    - python
+    - numpy >=1.8  # [not (win and (py35 or py36))]
+    - numpy >=1.9  # [win and py35]
+    - numpy >=1.11  # [win and py36]
+    - libpdal {{ version }}
+    - vc 9  # [win and py27]
+    - vc 14  # [win and (py35 and py36)]
+
+# test:
+#   files:
+#     - extra_tests.py
+#     - test_data/sites.dbf
+#     - test_data/sites.sbn
+#     - test_data/sites.sbx
+#     - test_data/sites.shp
+#     - test_data/sites.shx
+#   imports:
+#     - osr
+#     - gdal
+#     - gdalconst
+#     - osgeo
+#     - osgeo.ogr
+#     - osgeo.gdal
+#     - osgeo._gdal
+#     - osgeo._gdalconst
+#     - osgeo._ogr
+#     - osgeo._osr
+#   commands:
+#     - gdal_grid --version
+#     - gdal_rasterize --version
+#     - gdal_translate --version
+#     - gdaladdo --version
+#     - gdalenhance --version
+#     - gdalwarp --version
+#     - gdalinfo --formats
+#     - gdalinfo http://thredds.nersc.no/thredds/dodsC/greenpath/Model/topaz  # [not win]
+#     - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
+#     - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
+
+about:
+  home: http://www.pdal.io/
+  license: BSD
+  # license_file: LICENSE.TXT
+  summary: 'Point Data Abstraction Library (PDAL)'
+
+extra:
+  recipe-maintainers:
+    - kitware

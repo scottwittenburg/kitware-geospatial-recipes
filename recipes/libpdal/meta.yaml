@@ -1,0 +1,59 @@
+{% set version = "1.6" %}
+
+package:
+  name: libpdal
+  version: {{ version }}
+
+source:
+  url: https://github.com/PDAL/PDAL/archive/{{ version }}.tar.gz
+  sha256: 66baf8510225b34ee24021731758251cd70657dd578c210ae86c78d158f283eb
+
+build:
+  number: 0
+  skip: True  # [win]
+  features:
+    - vc9  # [win and py27]
+    - vc14  # [win and (py35 or py36)]
+
+requirements:
+  build:
+    - geos >=3.6
+    - geotiff
+    - libtiff >=4.0.3,<4.1
+    - proj4 4.9.3
+    - vc 9  # [win and py27]
+    - vc 14  # [win and (py35 or py36)]
+  run:
+    - geos >=3.6
+    - libtiff >=4.0.3,<4.1
+    - proj4 4.9.3
+    - sqlite 3.20.*
+    - vc 9  # [win and py27]
+    - vc 14  # [win and (py35 or py36)]
+
+# test:
+#   files:
+#     - test_data
+#   commands:
+#     - gdal_grid --version
+#     - gdal_rasterize --version
+#     - gdal_translate --version
+#     - gdaladdo --version
+#     - gdalenhance --version
+#     - gdalwarp --version
+#     - gdalinfo --formats
+#     - gdalinfo http://thredds.nersc.no/thredds/dodsC/greenpath/Model/topaz  # [not win]
+#     - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
+#     - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
+
+# about:
+#   home: http://www.gdal.org/
+#   license: MIT
+#   license_file: LICENSE.TXT
+#   summary: 'The Geospatial Data Abstraction Library (GDAL).'
+
+# extra:
+#   recipe-maintainers:
+#     - ocefpaf
+#     - kmuehlbauer
+#     - gillins

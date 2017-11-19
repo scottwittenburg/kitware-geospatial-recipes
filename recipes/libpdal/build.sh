@@ -2,6 +2,11 @@
 
 set -e # Abort on error.
 
+mkdir build
+cd build
+
+BUILD_CONFIG=Release
+
 export PING_SLEEP=30s
 export WORKDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export BUILD_OUTPUT=$WORKDIR/build.out
@@ -53,40 +58,13 @@ fi
 export LDFLAGS="$LDFLAGS -L$PREFIX/lib"
 export CPPFLAGS="$CPPFLAGS -I$PREFIX/include"
 
-# `--without-pam` was removed.
-# See https://github.com/conda-forge/gdal-feedstock/pull/47 for the discussion.
-
-./configure CC=$COMP_CC \
-            CXX=$COMP_CXX \
-            --prefix=$PREFIX \
-            --with-curl \
-            --with-dods-root=$PREFIX \
-            --with-expat=$PREFIX \
-            --with-freexl=$PREFIX \
-            --with-geos=$PREFIX/bin/geos-config \
-            --with-geotiff=$PREFIX \
-            --with-hdf4=$PREFIX \
-            --with-hdf5=$PREFIX \
-            --with-jpeg=$PREFIX \
-            --with-kea=$PREFIX/bin/kea-config \
-            --with-libjson-c=$PREFIX \
-            --with-libz=$PREFIX \
-            --with-libkml=$PREFIX \
-            --with-libtiff=$PREFIX \
-            --with-liblzma=yes \
-            --with-netcdf=$PREFIX \
-            --with-openjpeg=$PREFIX \
-            --with-poppler=$PREFIX \
-            --with-pcre \
-            --with-pg=$PREFIX/bin/pg_config \
-            --with-png=$PREFIX \
-            --with-spatialite=$PREFIX \
-            --with-sqlite3=$PREFIX \
-            --with-static-proj4=$PREFIX \
-            --with-xerces=$PREFIX \
-            --with-xml2=$PREFIX \
-            --without-python \
-            $OPTS
+cmake -G "Unix Makefiles" ../ \
+    -Wno-dev \
+    -DCMAKE_BUILD_TYPE=$BUILD_CONFIG \
+    -DCMAKE_PREFIX_PATH:PATH="${PREFIX}" \
+    -DCMAKE_INSTALL_PREFIX:PATH="${PREFIX}" \
+    -DCMAKE_INSTALL_RPATH:PATH="${PREFIX}/lib" \
+    -DBUILD_DOCUMENTATION:BOOL=OFF
 
 make -j $CPU_COUNT >> $BUILD_OUTPUT 2>&1
 make install >> $BUILD_OUTPUT 2>&1

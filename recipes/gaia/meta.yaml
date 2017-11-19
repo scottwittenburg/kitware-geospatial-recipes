@@ -25,10 +25,6 @@ requirements:
     - shapely
     - geopandas
     - pillow
-    - gdal
-    - celery
-    - psycopg2
-    - geoalchemy2
 
 test:
   imports:
@@ -46,4 +42,4 @@ about:
 
 extra:
   recipe-maintainers:
-    - Aashish Chaudhary
+    - kitware

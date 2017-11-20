@@ -23,8 +23,8 @@ requirements:
     - six
     - requests
     - shapely
-    - geopandas
     - pillow
+    - geopandas
 
 test:
   imports:

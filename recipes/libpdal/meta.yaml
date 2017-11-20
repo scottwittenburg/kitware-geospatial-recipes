@@ -21,13 +21,14 @@ requirements:
     - geotiff
     - libtiff >=4.0.3,<4.1
     - proj4 4.9.3
-    - laszip
+    - libgdal
     - vc 9  # [win and py27]
     - vc 14  # [win and (py35 or py36)]
   run:
     - geos >=3.6
     - libtiff >=4.0.3,<4.1
     - proj4 4.9.3
+    - libgdal
     - sqlite 3.20.*
     - vc 9  # [win and py27]
     - vc 14  # [win and (py35 or py36)]

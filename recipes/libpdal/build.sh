@@ -39,16 +39,20 @@ unset PYTHON
 
 export CFLAGS="-O2 -Wl,-S $CFLAGS"
 export CXXFLAGS="-O2 -Wl,-S $CXXFLAGS"
+set CMAKE_ARGS=""
 
 if [ $(uname) == Darwin ]; then
     export LDFLAGS="-headerpad_max_install_names"
+    export LDFLAGS="${LDFLAGS} -L/usr/local/opt/curl/lib"
     OPTS="--enable-rpath"
     export CXXFLAGS="-stdlib=libc++ $CXXFLAGS"
     COMP_CC=clang
     COMP_CXX=clang++
     export MACOSX_DEPLOYMENT_TARGET="10.9"
     export CXXFLAGS="${CXXFLAGS} -stdlib=libc++"
+    export CPPFLAGS="-I/usr/local/opt/curl/include"
     export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
+    CMAKE_ARGS="-DCURL_INCLUDE_DIR=/usr/local/opt/curl/include -DCURL_LIBRARY=/usr/local/opt/curl/lib/libcurl.dylib"
 else
     OPTS="--disable-rpath"
     COMP_CC=gcc
@@ -64,21 +68,14 @@ cmake -G "Unix Makefiles" ../ \
     -DCMAKE_PREFIX_PATH:PATH="${PREFIX}" \
     -DCMAKE_INSTALL_PREFIX:PATH="${PREFIX}" \
     -DCMAKE_INSTALL_RPATH:PATH="${PREFIX}/lib" \
-    -DBUILD_DOCUMENTATION:BOOL=OFF
+    -DGDAL_CONFIG:PATH=$PREFIX/bin/gdal-config \
+    -DGDAL_INCLUDE_DIR:PATH=$PREFIX/include \
+    -DGDAL_LIBRARY:PATH=$PREFIX/lib/libgdal.dylib \
+    -DBUILD_DOCUMENTATION:BOOL=OFF \
+    ${CMAKE_ARGS}
 
 make -j $CPU_COUNT >> $BUILD_OUTPUT 2>&1
 make install >> $BUILD_OUTPUT 2>&1
-
-# Make sure GDAL_DATA and set and still present in the package.
-# https://github.com/conda/conda-recipes/pull/267
-ACTIVATE_DIR=$PREFIX/etc/conda/activate.d
-DEACTIVATE_DIR=$PREFIX/etc/conda/deactivate.d
-mkdir -p $ACTIVATE_DIR
-mkdir -p $DEACTIVATE_DIR
-
-cp $RECIPE_DIR/scripts/activate.sh $ACTIVATE_DIR/gdal-activate.sh
-cp $RECIPE_DIR/scripts/deactivate.sh $DEACTIVATE_DIR/gdal-deactivate.sh
-## END BUILD
 
 # The build finished without returning an error so dump a tail of the output.
 dump_output

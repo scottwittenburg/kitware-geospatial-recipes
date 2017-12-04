@@ -52,11 +52,12 @@ if [ $(uname) == Darwin ]; then
     export CXXFLAGS="${CXXFLAGS} -stdlib=libc++"
     export CPPFLAGS="-I/usr/local/opt/curl/include"
     export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
-    CMAKE_ARGS="-DCURL_INCLUDE_DIR=/usr/local/opt/curl/include -DCURL_LIBRARY=/usr/local/opt/curl/lib/libcurl.dylib"
+    CMAKE_ARGS="-DCURL_INCLUDE_DIR=/usr/local/opt/curl/include -DCURL_LIBRARY=/usr/local/opt/curl/lib/libcurl.dylib -DGDAL_LIBRARY:PATH=$PREFIX/lib/libgdal.dylib"
 else
     OPTS="--disable-rpath"
     COMP_CC=gcc
     COMP_CXX=g++
+    export LDFLAGS="${LDFLAGS} -lkea -lproj -lpoppler -lxerces-c-3.2 -ldap -lpng16 -lpcre -liconv -lhdf5 -lgeos-3.6.2 -licui18n -licuuc -licudata -lcom_err -lhdf5_hl -lhdf5_cpp -lminizip -luriparser -lkmlbase -lkmldom -lkmlengine -ldapclient -lssl -lssh2 -lcrypto"
 fi
 
 export LDFLAGS="$LDFLAGS -L$PREFIX/lib"
@@ -69,9 +70,10 @@ cmake -G "Unix Makefiles" ../ \
     -DCMAKE_INSTALL_PREFIX:PATH="${PREFIX}" \
     -DCMAKE_INSTALL_RPATH:PATH="${PREFIX}/lib" \
     -DGDAL_CONFIG:PATH=$PREFIX/bin/gdal-config \
-    -DGDAL_INCLUDE_DIR:PATH=$PREFIX/include \
-    -DGDAL_LIBRARY:PATH=$PREFIX/lib/libgdal.dylib \
     -DBUILD_DOCUMENTATION:BOOL=OFF \
+    -DBUILD_PLUGIN_PGPOINTCLOUD:BOOL=OFF \
+    -DBUILD_PGPOINTCLOUD_TESTS:BOOL=OFF \
+    -DWITH_TESTS=OFF \
     ${CMAKE_ARGS}
 
 make -j $CPU_COUNT >> $BUILD_OUTPUT 2>&1

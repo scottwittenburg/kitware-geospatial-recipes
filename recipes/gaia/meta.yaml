@@ -30,8 +30,6 @@ requirements:
     - geoalchemy2 >=0.2.6
 
 test:
-  imports:
-    - gaia
   files:
     - test_data/test.cpg
     - test_data/test.dbf

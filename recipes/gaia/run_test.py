@@ -1,4 +1,5 @@
-import os, unittest
+import json, os, unittest
+import pdal
 import gaia
 import geopandas
 
@@ -25,6 +26,36 @@ class TestGaiaInstall(unittest.TestCase):
 
         self.assertGreater(bounds[3], 36)
         self.assertLess(bounds[3], 37)
+
+    def test_pdal(self):
+        fname = os.path.join(os.environ['RECIPE_DIR'], 'test_data', '1.2-with-color.las')
+
+        jsonPipeline = """
+        {
+          "pipeline": [
+            "%s",
+            {
+                "type": "filters.sort",
+                "dimension": "X"
+            }
+          ]
+        }""" % fname
+
+        print(jsonPipeline)
+
+        pipeline = pdal.Pipeline(jsonPipeline)
+        pipelineValid = pipeline.validate()
+
+        self.assertEqual(pipelineValid, True)
+
+        count = pipeline.execute()
+
+        self.assertEqual(count, 1065)
+
+        arrays = pipeline.arrays
+        metadata = pipeline.metadata
+
+        md = json.loads(metadata)
 
 if __name__ == '__main__':
     unittest.main()

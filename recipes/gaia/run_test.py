@@ -1,7 +1,9 @@
 import json, os, unittest
+import gdal
 import pdal
 import gaia
 import geopandas
+import numpy as np
 
 
 class TestGaiaInstall(unittest.TestCase):
@@ -27,6 +29,40 @@ class TestGaiaInstall(unittest.TestCase):
         self.assertGreater(bounds[3], 36)
         self.assertLess(bounds[3], 37)
 
+    def test_gdal(self):
+        fileName = os.path.join(os.environ['RECIPE_DIR'], 'test_data', 'tasmax-1-layer-cropped.tif')
+
+        dataset = gdal.Open(fileName)
+
+        metadata = dataset.GetMetadata()
+
+        self.assertEqual(dataset.RasterXSize, 50)
+        self.assertEqual(dataset.RasterYSize, 50)
+        self.assertEqual(metadata['tasmax#standard_name'], 'air_temperature')
+
+        sumArray = np.zeros((dataset.RasterYSize, dataset.RasterXSize))
+        total = 0
+        count = 0
+        numBands = dataset.RasterCount
+
+        self.assertEqual(numBands, 1)
+
+        for bandId in range(numBands):
+            band = dataset.GetRasterBand(bandId + 1).ReadAsArray()
+            sumArray += band
+
+        sumArray /= numBands
+        total = np.sum(np.sum(sumArray))
+        count = sumArray.size
+        avgCell = total / count
+        minCell = np.min(sumArray)
+        maxCell = np.max(sumArray)
+
+        self.assertEqual(count, 2500)
+        self.assertLess(minCell - 280, 1)
+        self.assertLess(maxCell - 304, 1)
+        self.assertLess(avgCell - 295, 1)
+
     def test_pdal(self):
         fname = os.path.join(os.environ['RECIPE_DIR'], 'test_data', '1.2-with-color.las')
 
@@ -41,8 +77,6 @@ class TestGaiaInstall(unittest.TestCase):
           ]
         }""" % fname
 
-        print(jsonPipeline)
-
         pipeline = pdal.Pipeline(jsonPipeline)
         pipelineValid = pipeline.validate()
 
@@ -52,10 +86,11 @@ class TestGaiaInstall(unittest.TestCase):
 
         self.assertEqual(count, 1065)
 
-        arrays = pipeline.arrays
-        metadata = pipeline.metadata
+        # Could do more checks with the values below
+        # arrays = pipeline.arrays
+        # metadata = pipeline.metadata
 
-        md = json.loads(metadata)
+        # md = json.loads(metadata)
 
 if __name__ == '__main__':
     unittest.main()

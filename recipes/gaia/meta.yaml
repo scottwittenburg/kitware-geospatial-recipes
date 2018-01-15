@@ -25,10 +25,13 @@ requirements:
     - shapely
     - pillow
     - geopandas
+    - gdal 2.2.3
+    - pdal 1.6
+    - celery >=3.1.20
+    - psycopg2 >=2.6.1
+    - geoalchemy2 >=0.2.6
 
 test:
-  imports:
-    - gaia
   files:
     - test_data/test.cpg
     - test_data/test.dbf

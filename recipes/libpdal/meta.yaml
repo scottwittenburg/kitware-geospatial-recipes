@@ -19,18 +19,23 @@ requirements:
   build:
     - geos >=3.6
     - geotiff
-    - libtiff >=4.0.3,<4.1
+    - jsoncpp >=1.6.2
+    - libtiff >=4.0.8,<4.0.10
     - proj4 4.9.3
     - libgdal
-    - curl 7.54.1
+    - numpy >=1.5
+    - curl >=7.54.1,<8
     - vc 9  # [win and py27]
     - vc 14  # [win and (py35 or py36)]
   run:
     - geos >=3.6
-    - libtiff >=4.0.3,<4.1
+    - geotiff
+    - jsoncpp >=1.6.2
+    - libtiff >=4.0.8,<4.0.10
     - proj4 4.9.3
     - libgdal
-    - curl 7.54.1
+    - numpy >=1.5
+    - curl >=7.54.1,<8
     - sqlite 3.20.*
     - vc 9  # [win and py27]
     - vc 14  # [win and (py35 or py36)]

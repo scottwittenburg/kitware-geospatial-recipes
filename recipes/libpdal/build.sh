@@ -43,21 +43,17 @@ set CMAKE_ARGS=""
 
 if [ $(uname) == Darwin ]; then
     export LDFLAGS="-headerpad_max_install_names"
-    export LDFLAGS="${LDFLAGS} -L/usr/local/opt/curl/lib"
-    OPTS="--enable-rpath"
     export CXXFLAGS="-stdlib=libc++ $CXXFLAGS"
     COMP_CC=clang
     COMP_CXX=clang++
     export MACOSX_DEPLOYMENT_TARGET="10.9"
     export CXXFLAGS="${CXXFLAGS} -stdlib=libc++"
-    export CPPFLAGS="-I/usr/local/opt/curl/include"
     export LDFLAGS="${LDFLAGS} -headerpad_max_install_names"
-    CMAKE_ARGS="-DCURL_INCLUDE_DIR=/usr/local/opt/curl/include -DCURL_LIBRARY=/usr/local/opt/curl/lib/libcurl.dylib -DGDAL_LIBRARY:PATH=$PREFIX/lib/libgdal.dylib"
+    CMAKE_ARGS="-DCMAKE_BUILD_RPATH:PATH=${PREFIX}/lib -DGDAL_LIBRARY:PATH=$PREFIX/lib/libgdal.dylib"
 else
-    OPTS="--disable-rpath"
     COMP_CC=gcc
     COMP_CXX=g++
-    export LDFLAGS="${LDFLAGS} -lkea -lproj -lpoppler -lxerces-c-3.2 -ldap -lpng16 -lpcre -liconv -lhdf5 -lgeos-3.6.2 -licui18n -licuuc -licudata -lcom_err -lhdf5_hl -lhdf5_cpp -lminizip -luriparser -lkmlbase -lkmldom -lkmlengine -ldapclient -lssl -lssh2 -lcrypto"
+    export LDFLAGS="${LDFLAGS} -lkea -lproj -lpoppler -lxerces-c-3.2 -ldap -lpng16 -lpcre -liconv -lhdf5 -lgeos-3.6.2 -licui18n -licuuc -licudata -lcom_err -lhdf5_hl -lhdf5_cpp -lminizip -luriparser -lkmlbase -lkmldom -lkmlengine -ldapclient -lssl -lssh2 -lcrypto -lmfhdf -ldf -ljpeg -ltiff"
 fi
 
 export LDFLAGS="$LDFLAGS -L$PREFIX/lib"
